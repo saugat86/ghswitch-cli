@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ghswitch-cli"
-version = "1.0"
+version = "1.0.0"
 description = "Manage multiple GitHub identities for git operations."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -22,14 +22,13 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Version Control :: Git",
 ]
+dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/saugat86/ghswitch-cli"
 Repository = "https://github.com/saugat86/ghswitch-cli"
 "Bug Tracker" = "https://github.com/saugat86/ghswitch-cli/issues"
 Changelog = "https://github.com/saugat86/ghswitch-cli/blob/main/CHANGELOG.md"
-
-dependencies = []
 
 [project.optional-dependencies]
 keyring = ["keyring>=24"]
