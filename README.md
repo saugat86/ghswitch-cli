@@ -14,9 +14,8 @@ across `git clone`, `git push`, and per-repo `user.name` / `user.email`.
 ## Install
 
 ```bash
-# from this directory
-pip install .                  # core
-pip install '.[keyring]'       # recommended — uses OS keychain for tokens
+pip install ghswitch-cli                  # core
+pip install 'ghswitch-cli[keyring]'       # recommended — uses OS keychain for tokens
 ```
 
 That installs a `ghswitch` console script. Verify with `ghswitch --help`.
@@ -177,11 +176,10 @@ CI is in `.github/workflows/`:
 
 To cut a release:
 
-```bash
-# bump version in pyproject.toml, commit, then:
-git tag v0.1.0
-git push origin v0.1.0
-```
+1. Bump `version` in `pyproject.toml` and commit + push
+2. Go to **Actions → release → Run workflow** and enter the version number
+
+The workflow creates the tag, builds sdist + wheel, creates a GitHub Release, and publishes to PyPI automatically.
 
 ## Uninstall
 
