@@ -4,11 +4,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ghswitch-cli"
-version = "0.1.1"
+version = "1.0"
 description = "Manage multiple GitHub identities for git operations."
+readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "ghswitch contributors" }]
+authors = [{ name = "saugat86", email = "saugattripathi86@gmail.com" }]
+keywords = ["github", "git", "identity", "ssh", "cli", "multiple accounts"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Version Control :: Git",
+]
+
+[project.urls]
+Homepage = "https://github.com/saugat86/ghswitch-cli"
+Repository = "https://github.com/saugat86/ghswitch-cli"
+"Bug Tracker" = "https://github.com/saugat86/ghswitch-cli/issues"
+Changelog = "https://github.com/saugat86/ghswitch-cli/blob/main/CHANGELOG.md"
+
 dependencies = []
 
 [project.optional-dependencies]
