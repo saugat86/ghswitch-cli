@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghswitch"
+version = "0.1.0"
+description = "Manage multiple GitHub identities for git operations."
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "ghswitch contributors" }]
+dependencies = []
+
+[project.optional-dependencies]
+keyring = ["keyring>=24"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+ghswitch = "ghswitch:main"
+
+[tool.setuptools]
+py-modules = ["ghswitch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
