@@ -4,31 +4,61 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 0.1.0)"
+        required: true
 
 permissions:
-  contents: write   # for creating the GitHub Release
-  id-token: write   # for PyPI trusted publishing (OIDC)
+  contents: write
+  id-token: write
 
 jobs:
+  tag:
+    name: Create and push tag
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify version matches pyproject.toml
+        run: |
+          pyver=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          if [ "${{ github.event.inputs.version }}" != "$pyver" ]; then
+            echo "Input version ${{ github.event.inputs.version }} does not match pyproject.toml version $pyver" >&2
+            echo "Please update pyproject.toml before releasing." >&2
+            exit 1
+          fi
+
+      - name: Create and push tag
+        id: set-tag
+        run: |
+          TAG="v${{ github.event.inputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build sdist + wheel
+    needs: [tag]
+    if: always() && (github.event_name == 'push' || needs.tag.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && needs.tag.outputs.tag || github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Verify tag matches pyproject version
-        run: |
-          tag="${GITHUB_REF_NAME#v}"
-          pyver=$(python -c "import tomllib,sys; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
-          if [ "$tag" != "$pyver" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match pyproject version $pyver" >&2
-            exit 1
-          fi
 
       - name: Install build tooling
         run: |
@@ -46,12 +76,14 @@ jobs:
 
   github-release:
     name: Create GitHub Release
-    needs: build
+    needs: [tag, build]
+    if: always() && needs.build.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_dispatch' && needs.tag.outputs.tag || github.ref }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -63,8 +95,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            --title "$GITHUB_REF_NAME" \
+          TAG=${{ github.event_name == 'workflow_dispatch' && needs.tag.outputs.tag || github.ref_name }}
+          gh release create "$TAG" \
+            --title "$TAG" \
             --generate-notes \
             dist/*
 
