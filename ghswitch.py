@@ -221,7 +221,10 @@ def prompt(label: str, default: Optional[str] = None, secret: bool = False) -> s
         import getpass
         return getpass.getpass(f"{label}: ")
     suffix = f" [{default}]" if default else ""
-    val = input(f"{label}{suffix}: ").strip()
+    try:
+        val = input(f"{label}{suffix}: ").strip()
+    except EOFError:
+        val = ""
     return val or (default or "")
 
 
