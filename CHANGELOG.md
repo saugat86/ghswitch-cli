@@ -1,3 +1,7 @@
+## [v1.0.0] - 2026-05-18
+
+**Full Changelog**: https://github.com/saugat86/ghswitch-cli/compare/v0.1.1...v1.0.0
+
 ## [v0.1.1] - 2026-05-18
 
 **Full Changelog**: https://github.com/saugat86/ghswitch-cli/compare/v0.1.0...v0.1.1
